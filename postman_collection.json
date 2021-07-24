@@ -1,0 +1,541 @@
+{
+	"info": {
+		"_postman_id": "98aecdce-a843-4ca0-be61-639e43622a22",
+		"name": "Inter APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Cria usuário",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify that has ID\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.be.not.null;\r",
+									"    pm.environment.set(\"lastCreatedUser\", jsonData.id);\r",
+									"    pm.environment.set(\"originalName\", jsonData.name);\r",
+									"    pm.environment.set(\"originalEmail\", jsonData.email);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"regis\",\r\n    \"email\": \"regis@bancointer.com.br\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/inter/user/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"inter",
+								"user",
+								""
+							]
+						},
+						"description": "Cria um usuário"
+					},
+					"response": []
+				},
+				{
+					"name": "Encontra usuário",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify that has ID\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.be.not.null;\r",
+									"})\r",
+									"pm.test(\"Verify original name and email\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.name).to.be.not.null\r",
+									"    pm.expect(jsonData.email).to.be.not.null\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/inter/user/{{lastCreatedUser}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"inter",
+								"user",
+								"{{lastCreatedUser}}"
+							]
+						},
+						"description": "Encontra um usuário pelo ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Atualiza usuário",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify that has ID\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.be.not.null;\r",
+									"})\r",
+									"pm.test(\"Verify changed information\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.name).to.be.not.null\r",
+									"    pm.expect(jsonData.name).to.be.not.equal(pm.variables.get(\"originalName\"));\r",
+									"    pm.expect(jsonData.email).to.be.not.null\r",
+									"    pm.expect(jsonData.email).to.be.not.equal(pm.variables.get(\"originalEmail\"));\r",
+									"    pm.environment.set(\"currentName\", jsonData.name);\r",
+									"    pm.environment.set(\"currentEmail\", jsonData.email);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"regis andre\",\r\n    \"email\": \"contratado@bancointer.com.br\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/inter/user/{{lastCreatedUser}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"inter",
+								"user",
+								"{{lastCreatedUser}}"
+							]
+						},
+						"description": "Procura um usuário pelo id, caso encontre, atualiza-o com as informações presentes no corpo do request."
+					},
+					"response": []
+				},
+				{
+					"name": "Calcula e adiciona dígito",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify that has ID\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.be.not.null;\r",
+									"})\r",
+									"pm.test(\"Verify changed digit was added\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.verifiers).to.be.not.empty\r",
+									"    pm.environment.set(\"verifierAmount\", jsonData.verifiers.length);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"regis andre\",\r\n    \"email\": \"regis@bancointer.com.br\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/inter/user/{{lastCreatedUser}}/add?code=9875987598759874",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"inter",
+								"user",
+								"{{lastCreatedUser}}",
+								"add"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "9875987598759874"
+								}
+							]
+						},
+						"description": "Calcula o dígito verificador para o codigo fornecido. Opcionalmente salva o dígito para um usuário existente."
+					},
+					"response": []
+				},
+				{
+					"name": "Encontra verificadores ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify changed amount of digits match\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.not.empty\r",
+									"    pm.expect(jsonData.length).to.be.equal(pm.variables.get(\"verifierAmount\"));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/inter/user/{{lastCreatedUser}}/verifiers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"inter",
+								"user",
+								"{{lastCreatedUser}}",
+								"verifiers"
+							]
+						},
+						"description": "Procura um usuário pelo id, caso encontre, retorna todos os dígitos verificadores associados ao usuário encontrado."
+					},
+					"response": []
+				},
+				{
+					"name": "Criptografa dados do usuário",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify that has ID\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.be.not.null;\r",
+									"})\r",
+									"pm.test(\"Differs from originals\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.name).to.be.not.equal(pm.variables.get(\"originalName\"));\r",
+									"    pm.expect(jsonData.email).to.be.not.equal(pm.variables.get(\"originalEmail\"));\r",
+									"})\r",
+									"pm.test(\"Differs from last seen\", function() {\r",
+									"        var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.name).to.be.not.equal(pm.variables.get(\"currentName\"));\r",
+									"    pm.expect(jsonData.email).to.be.not.equal(pm.variables.get(\"currentEmail\"));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp+q9bRGIP0h/71DOVJ2QirBbIfsCZH3OoqcNsQgV98dHrqRP3PIpbqUfDtNg10k9/G40xLldtky3xtFKIAtiSmwSzGPMZ6b9XW9ovvkPqsdTlT+nLIFAofcWZd0+PPf7ZtcvO0CWg1laOd4BDTU5+uDzeBi6QDPMBz/jR4ValPoTMm0L64UmXnvVoD8Rbht7uCLmQeywL5t5xdHb0ecHgm1orGxAEbImKTLpQv1MCtsWDv9HvZH0SplwhY/UphOYxVij+5zDCwUCUBEA+gb1N4G9sbhPHRi1yea9FjE1ibBjr4c54Q2U6NDrzxrlX7BpEHdV9r93zAXM8fED2xkSfwIDAQAB",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/inter/user/{{lastCreatedUser}}/encrypt",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"inter",
+								"user",
+								"{{lastCreatedUser}}",
+								"encrypt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove usuário",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify deleted ID\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.equal(pm.variables.get(\"lastCreatedUser\"));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/inter/user/{{lastCreatedUser}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"inter",
+								"user",
+								"{{lastCreatedUser}}"
+							]
+						},
+						"description": "Procura um usuário pelo id, caso encontre, remove-o do banco de dados."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Digit",
+			"item": [
+				{
+					"name": "Calcula digito",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify response contains result\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.not.null\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/inter/digit/discover?code=9875987598759875&user=0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"inter",
+								"digit",
+								"discover"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "9875987598759875"
+								},
+								{
+									"key": "user",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calcula digito e adiciona",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify response contains result\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.not.null\r",
+									"    pm.environment.set(\"verifierAmount\", pm.variables.get(\"verifierAmount\") + 1);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/inter/digit/discover?code=9875987598759875&user={{lastCreatedUser}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"inter",
+								"digit",
+								"discover"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "9875987598759875"
+								},
+								{
+									"key": "user",
+									"value": "{{lastCreatedUser}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Encontra dígitos do usuário",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify amount of digits match\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.not.empty\r",
+									"    pm.expect(jsonData.length).to.be.equal(pm.variables.get(\"verifierAmount\"));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/inter/digit/retrieve/{{lastCreatedUser}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"inter",
+								"digit",
+								"retrieve",
+								"{{lastCreatedUser}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Status code is 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});"
+				]
+			}
+		}
+	]
+}
